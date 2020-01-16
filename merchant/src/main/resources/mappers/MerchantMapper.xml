@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.john.miaosha.merchant.mapper.MerchantMapper">
+    <select id="findMerchantById" resultType="com.john.miaosha.entity.MerchantInfo">
+        SELECT
+            id,
+            account,
+            encryption_password encryptionPassword,
+            original_password originalPassword,
+            telphone,
+            `name`,
+            province,
+            city,
+            address,
+            create_time createTime
+        FROM merchant
+        WHERE id = #{id}
+    </select>
+
+    <select id="findMerchantByAccount" resultType="com.john.miaosha.entity.MerchantInfo">
+        SELECT
+            account,
+            encryption_password encryptionPassword
+        FROM merchant
+        WHERE account = #{account}
+    </select>
+    
+    <insert id="saveMerchantInfo" parameterType="com.john.miaosha.entity.MerchantInfo">
+        <selectKey keyProperty="id" order="AFTER" resultType="int">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO merchant
+        (account, original_password, encryption_password, telphone, `name`, province, city, address, create_time)
+        VALUES
+        (#{merchantInfo.account}, #{merchantInfo.originalPassword}, #{merchantInfo.encryptionPassword}, #{merchantInfo.telphone},
+        #{merchantInfo.name}, #{merchantInfo.province}, #{merchantInfo.city}, #{merchantInfo.address}, current_timestamp)
+    </insert>
+
+</mapper>
