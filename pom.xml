@@ -9,6 +9,7 @@
         <module>registerCenter</module>
         <module>user</module>
         <module>merchant</module>
+        <module>shop</module>
     </modules>
 
     <parent>
