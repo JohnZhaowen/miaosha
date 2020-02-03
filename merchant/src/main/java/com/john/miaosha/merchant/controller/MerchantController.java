@@ -21,7 +21,7 @@ public class MerchantController {
 
     @GetMapping(value = "/findMerchantById")
     public String findMerchantById(int id, Model model){
-        model.addAttribute("merchantInfo", merchantService.findUserById(id));
+        model.addAttribute("merchantInfo", merchantService.findMerchantById(id));
         return "viewMerchant";
     }
 
@@ -34,7 +34,7 @@ public class MerchantController {
     public String checkIn(MerchantCheckInForm merchantCheckInForm, Model model){
 
         if(StringUtils.isBlank(merchantCheckInForm.getAccount())){
-            model.addAttribute("error", "用户名不能为空");
+            model.addAttribute("error", "商户名不能为空");
             return "toCheckIn";
         }
 

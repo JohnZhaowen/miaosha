@@ -7,7 +7,7 @@ import com.john.miaosha.form.UserRegisterForm;
 
 public interface MerchantService {
 
-    MerchantInfo findUserById(int id);
+    MerchantInfo findMerchantById(int id);
 
     void saveMerchantInfo(MerchantCheckInForm merchantCheckInForm);
 

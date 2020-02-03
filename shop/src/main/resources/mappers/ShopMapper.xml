@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.john.miaosha.shop.mapper.ShopMapper">
+
+    <insert id="saveShopInfo" parameterType="com.john.miaosha.entity.ShopInfo">
+        INSERT INTO shop
+        (merchant_id, shop_name, shop_desc, shop_biz_scope, province, city, biz_license, state, create_time)
+        VALUES
+        (#{shopInfo.merchantId}, #{shopInfo.shopName}, #{shopInfo.shopDesc}, #{shopInfo.shopBizScope},
+        #{shopInfo.province}, #{shopInfo.city}, #{shopInfo.bizLicense}, #{shopInfo.state}, current_timestamp)
+    </insert>
+
+    <select id="listShopInfoBy" parameterType="com.john.miaosha.vo.ShopInfoVo" resultType="com.john.miaosha.entity.ShopInfo">
+        SELECT id, merchant_id merchantId, shop_name shopName, shop_desc shopDesc, shop_biz_scope shopBizScope, province, city,
+        biz_license bizLicense, state, create_time createTime
+        FROM shop
+        <where>
+            <include refid="shopInfoCondition"></include>
+        </where>
+    </select>
+    <sql id="shopInfoCondition">
+        <if test="shopInfoCondition != null">
+            <if test="shopInfoCondition.shopName != null and shopInfoCondition.shopName != ''">
+                and shop_name = #{shopInfoCondition.shopName}
+            </if>
+            <if test="shopInfoCondition.state != null and shopInfoCondition.state != ''">
+                and state = #{shopInfoCondition.state}
+            </if>
+        </if>
+    </sql>
+
+    <update id="updateShopInfoBy" parameterType="com.john.miaosha.entity.ShopInfo">
+        UPDATE shop
+        SET
+            state = #{state}
+        WHERE id = #{id}
+
+    </update>
+
+</mapper>

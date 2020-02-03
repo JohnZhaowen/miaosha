@@ -16,7 +16,7 @@ public class MerchantServiceImpl implements MerchantService {
     private MerchantMapper merchantMapper;
 
     @Override
-    public MerchantInfo findUserById(int userId) {
+    public MerchantInfo findMerchantById(int userId) {
         return merchantMapper.findMerchantById(userId);
     }
 
