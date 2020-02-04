@@ -10,6 +10,7 @@
         <module>user</module>
         <module>merchant</module>
         <module>shop</module>
+        <module>productType</module>
     </modules>
 
     <parent>
