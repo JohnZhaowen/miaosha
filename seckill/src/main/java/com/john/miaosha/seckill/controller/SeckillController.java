@@ -41,7 +41,7 @@ public class SeckillController {
     }
 
     @PostMapping(value = "/saveSeckillProduct")
-    public String saveSeckillProduct(SeckillForm seckillForm, Model model){
+    public String saveSeckillProduct(SeckillForm seckillForm){
         seckillService.saveSeckill(seckillForm);
         return "seckillSaveSuccess";
     }
@@ -63,5 +63,16 @@ public class SeckillController {
         seckillInfo.setId(id);
         seckillService.updateSeckillInfoBy(seckillInfo);
         return "seckillUpdateStateSuccess";
+    }
+
+
+    @GetMapping(value = "/listSeckillProductByState")
+    public String listSeckillProductByState(Model model){
+        SeckillForm seckillForm = new SeckillForm();
+        seckillForm.setState(3);
+        List<SeckillInfo> seckillInfos = seckillService.listSeckillInfo(seckillForm);
+
+        model.addAttribute("list", seckillInfos);
+        return "seckillPortal";
     }
 }

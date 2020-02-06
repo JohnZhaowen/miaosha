@@ -12,4 +12,7 @@ public interface SeckillMapper {
     List<SeckillInfo> listSeckillInfo(SeckillInfoVo seckillInfoVo);
 
     void updateSeckillInfoBy(SeckillInfo seckillInfo);
+    void updateSeckillInfoBySeckNum(SeckillInfo seckillInfo);
+
+    SeckillInfo findSeckillInfoById(Long id);
 }
