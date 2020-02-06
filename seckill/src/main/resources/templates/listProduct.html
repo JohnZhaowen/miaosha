@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+<table border="1">
+    <tr>
+        <td>商品名称</td>
+        <td>商品标题</td>
+        <td>商品价格</td>
+        <td>商品折扣价格</td>
+        <td>审批通过时间</td>
+        <td>商品创建时间</td>
+        <td>操作</td>
+    </tr>
+    <tr th:each="entity:${list}">
+        <td><span th:text="${entity.productName}"/></td>
+        <td><span th:text="${entity.productTitle}"/></td>
+        <td><span th:text="${entity.productPrice}"/></td>
+        <td><span th:text="${entity.productDiscounts}"/></td>
+        <td><span th:text="${entity.approveTime}"/></td>
+        <td><span th:text="${entity.createTime}"/></td>
+        <td>
+            <a href="#" th:href="@{/seckill/preSaveSeckillProduct(id=${entity.id})}">发布秒杀</a>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

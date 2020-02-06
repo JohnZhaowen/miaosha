@@ -1,13 +1,8 @@
 package com.john.miaosha.producttype.mapper;
 
-import com.john.miaosha.entity.UserInfo;
-import org.apache.ibatis.annotations.Param;
+import com.john.miaosha.entity.ProductTypeInfo;
 
 public interface ProductTypeMapper {
 
-    UserInfo findUserById(@Param("userId") int userId);
-
-    void saveUserInfo(@Param("userInfo") UserInfo userInfo);
-
-    UserInfo findUserByAccount(@Param("account") String account);
+    void saveProductType(ProductTypeInfo productTypeInfo);
 }

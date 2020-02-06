@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.john.miaosha.product.mapper.ProductInfoMapper">
+
+    <insert id="saveProductInfo" parameterType="com.john.miaosha.entity.ProductInfo">
+        INSERT INTO product_info
+        (merchant_id, product_type_id, product_inventory, product_title, product_name, product_picture_url, product_price, product_discounts,
+        shop_id, state, create_time)
+        VALUES
+        (#{merchantId}, #{productTypeId}, #{productInventory}, #{productTitle}, #{productName}, #{productPictureUrl}, #{productPrice},
+        #{productDiscounts}, #{shopId}, #{state}, current_timestamp )
+    </insert>
+
+    <select id="listProductInfoBy" parameterType="com.john.miaosha.vo.ProductInfoVo" resultType="com.john.miaosha.entity.ProductInfo">
+        SELECT id, merchant_id merchantId, product_type_id productTypeId, product_inventory productInventory, shop_id shopId,
+        product_title productTitle, product_name productName, product_picture_url productPictureUrl, product_price productPrice,
+        product_discounts productDiscounts, state, approve_time approveTime, create_time createTime, update_time updateTime
+        FROM product_info
+        <where>
+            <include refid="productInfoCondition"></include>
+        </where>
+    </select>
+    <sql id="productInfoCondition">
+        <if test="productInfoCondition != null">
+            <if test="productInfoCondition.productName != null and productInfoCondition.productName != ''">
+                and product_name = #{productInfoCondition.productName}
+            </if>
+            <if test="productInfoCondition.state != null and productInfoCondition.state != ''">
+                and state = #{productInfoCondition.state}
+            </if>
+            <if test="productInfoCondition.shopId != null and productInfoCondition.shopId != ''">
+                and shop_id = #{productInfoCondition.shopId}
+            </if>
+        </if>
+    </sql>
+    <select id="findProductById" resultType="com.john.miaosha.entity.ProductInfo">
+        SELECT id, merchant_id merchantId, product_type_id productTypeId, product_inventory productInventory, shop_id shopId,
+        product_title productTitle, product_name productName, product_picture_url productPictureUrl, product_price productPrice,
+        product_discounts productDiscounts, state, approve_time approveTime, create_time createTime, update_time updateTime
+        FROM product_info
+        WHERE id = #{id}
+    </select>
+
+    <update id="updateProductInfoBy" parameterType="com.john.miaosha.entity.ProductInfo">
+        UPDATE product_info
+        SET state = #{state}, update_time = current_timestamp
+        <if test="state == 1 or state == 2">
+            , approve_time = current_timestamp
+        </if>
+        WHERE id = #{id}
+    </update>
+
+</mapper>

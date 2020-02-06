@@ -1,5 +1,7 @@
 package com.john.miaosha.producttype.service;
 
-public interface ProductTypeService {
+import com.john.miaosha.entity.ProductTypeInfo;
 
+public interface ProductTypeService {
+    void saveProductType(ProductTypeInfo productTypeInfo);
 }
