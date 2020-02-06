@@ -46,5 +46,14 @@ public class SeckillByController {
         Map<String, String> stringStringMap = seckillByService.optimisticLock(userId, id);
         return stringStringMap;
     }
+    @GetMapping(value = "/seckillByQueue/{userId}/{id}")
+    public String seckillByQueue(@PathVariable("userId") Long userId, @PathVariable("id") Long id){
+        seckillByService.queueAndThread(userId, id);
+        return "秒杀任务提交成功";
+    }
+    @GetMapping(value = "/seckillByRedisLock/{userId}/{id}")
+    public Map<String, String> seckillByRedisLock(@PathVariable("userId") Long userId, @PathVariable("id") Long id){
+        return seckillByService.redisLock(userId, id);
+    }
 
 }

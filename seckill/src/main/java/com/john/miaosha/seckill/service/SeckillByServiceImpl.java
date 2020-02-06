@@ -3,15 +3,21 @@ package com.john.miaosha.seckill.service;
 import com.john.miaosha.entity.SeckillInfo;
 import com.john.miaosha.entity.SeckillResult;
 import com.john.miaosha.seckill.mapper.SeckillMapper;
+import com.john.miaosha.seckill.util.RedisLockUtil;
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
@@ -34,8 +40,16 @@ public class SeckillByServiceImpl implements SeckillByService {
 
     private ConcurrentHashMap<String, Long> cacheMap = new ConcurrentHashMap<>();
 
+    private BlockingQueue<QueueRequest> seckillQueue = new LinkedBlockingQueue<>();
+
     private static final String Inventory = "Inventory";
+
     private static final String SeckillNum = "SeckillNum";
+
+    @PostConstruct
+    public void consumer(){
+        new Thread(new ConsumerQueueRequest()).start();
+    }
 
     @Override
     @Transactional
@@ -167,13 +181,47 @@ public class SeckillByServiceImpl implements SeckillByService {
     @Transactional
     public Map<String, String> optimisticLock(long userId, long id){
         Map<String, String> result = new HashMap<>();
+        return processSeckill(id, result);
+    }
+
+    @Transactional
+    public Map<String, String> redisLock(long userId, long id){
+
+        Map<String, String> result = new HashMap<>();
+
+        try {
+            boolean getLock = RedisLockUtil.tryGetDistributedLock(id + "", userId + "", 50000);
+            if(getLock){
+                return processSeckill(id, result);
+            } else {
+                for(int i = 0; i < 3; i++){
+                    getLock = RedisLockUtil.tryGetDistributedLock(id + "", userId + "", 50000);
+                    if(getLock){
+                        return processSeckill(id, result);
+                    }
+                }
+
+                log.info("操作失败，请重试");
+                result.put("flag", "fail");
+                result.put("date", "操作失败，请重试！");
+                return result;
+            }
+        } finally {
+            boolean rls = RedisLockUtil.releaseDistributedLock(id + "", userId + "");
+            while(!rls){
+                rls = RedisLockUtil.releaseDistributedLock(id + "", userId + "");
+            }
+        }
+
+    }
+
+    private Map<String, String> processSeckill(long id, Map<String, String> result) {
         SeckillInfo seckillInfo = seckillMapper.findSeckillInfoById(id);
 
-        Long version = seckillInfo.getVersion();
         Long seckillInventory = seckillInfo.getSeckillInventory();
         Long seckillNum = seckillInfo.getSeckillNum();
 
-        if(seckillNum >= seckillInventory){
+        if (seckillNum >= seckillInventory) {
             log.info("卖光了，谢谢惠顾！");
             result.put("flag", "fail");
             result.put("date", "卖光了，谢谢惠顾！");
@@ -181,7 +229,7 @@ public class SeckillByServiceImpl implements SeckillByService {
         }
         seckillInfo.setSeckillNum(++seckillNum);
         int updateNum = seckillMapper.updateSeckillInfoByVersion(seckillInfo);
-        if(updateNum > 0){
+        if (updateNum > 0) {
             log.info("秒杀成功");
             result.put("flag", "success");
             result.put("date", "秒杀成功");
@@ -193,7 +241,72 @@ public class SeckillByServiceImpl implements SeckillByService {
         return result;
     }
 
+    @Override
+    public void queueAndThread(long userId, long id){
 
+        QueueRequest queueRequest = new QueueRequest(id, userId);
+        try {
+            seckillQueue.put(queueRequest);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+
+    }
+
+    class ConsumerQueueRequest implements Runnable {
+
+        @Override
+        public void run() {
+            while (!Thread.interrupted()) {
+                try {
+                    QueueRequest queueRequest = seckillQueue.take();
+                    Long id = queueRequest.getId();
+                    Long userId = queueRequest.getUserId();
+                    SeckillInfo seckillInfo = seckillMapper.findSeckillInfoById(id);
+                    Long inventory = seckillInfo.getSeckillInventory();
+                    Long seckillNum = seckillInfo.getSeckillNum();
+                    seckillNum++;
+
+                    SeckillResult seckillResult = new SeckillResult();
+                    seckillResult.setUserId(userId);
+                    seckillResult.setProductId(seckillInfo.getProductId());
+                    seckillResult.setSeckillId(id);
+                    seckillResult.setResult(1);
+                    seckillResult.setResultData("秒杀成功");
+
+                    seckillInfo.setSeckillNum(seckillNum);
+                    if(seckillNum > inventory){
+                        log.info("卖光了，谢谢惠顾！");
+                        seckillResult.setResult(0);
+                        seckillResult.setResultData("秒杀失败");
+                    } else {
+                        log.info("秒杀成功");
+                        seckillMapper.updateSeckillInfoBySeckNum(seckillInfo);
+                    }
+
+                    seckillResultService.saveSeckillResult(seckillResult);
+
+
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }
+    }
+
+    @Data
+    @AllArgsConstructor
+    @NoArgsConstructor
+    class QueueRequest{
+
+        private Long id;
+
+        private Long userId;
+
+    }
 
 
 }

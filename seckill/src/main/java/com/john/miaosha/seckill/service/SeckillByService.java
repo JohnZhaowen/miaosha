@@ -13,4 +13,8 @@ public interface SeckillByService {
     Map<String, String> pessimismLock(long userId, long id);
 
     Map<String, String> optimisticLock(long userId, long id);
+
+    void queueAndThread(long userId, long id);
+
+    Map<String, String> redisLock(long userId, long id);
 }
