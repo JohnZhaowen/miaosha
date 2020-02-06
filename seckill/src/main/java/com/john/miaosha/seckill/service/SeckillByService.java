@@ -5,4 +5,8 @@ import java.util.Map;
 public interface SeckillByService {
 
     Map<String, String> programLock(long userId, long id);
+
+    Map<String, String> programLockByAop(long userId, long id);
+
+    void multiThread(long userId, long id);
 }

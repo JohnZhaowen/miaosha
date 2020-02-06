@@ -23,5 +23,15 @@ public class SeckillByController {
         return stringStringMap;
     }
 
+    @GetMapping(value = "/programLockByAop/{userId}/{id}")
+    public Map<String, String> programLockByAop(@PathVariable("userId") Long userId, @PathVariable("id") Long id){
+        Map<String, String> stringStringMap = seckillByService.programLockByAop(userId, id);
+        return stringStringMap;
+    }
+    @GetMapping(value = "/seckillByMultiThread/{userId}/{id}")
+    public String seckillByMultiThread(@PathVariable("userId") Long userId, @PathVariable("id") Long id){
+        seckillByService.multiThread(userId, id);
+        return "秒杀请求已提交";
+    }
 
 }

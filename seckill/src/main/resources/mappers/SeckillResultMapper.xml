@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.john.miaosha.seckill.mapper.SeckillResultMapper">
+
+    <insert id="saveSeckillResult" parameterType="com.john.miaosha.entity.SeckillResult">
+        INSERT INTO seckill_result
+        (user_id, product_id, seckill_id, result, result_data, sec_time)
+        VALUES
+        (#{userId}, #{productId}, #{seckillId}, #{result}, #{resultData}, current_timestamp )
+    </insert>
+
+
+
+</mapper>
