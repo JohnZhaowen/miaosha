@@ -28,10 +28,23 @@ public class SeckillByController {
         Map<String, String> stringStringMap = seckillByService.programLockByAop(userId, id);
         return stringStringMap;
     }
+
     @GetMapping(value = "/seckillByMultiThread/{userId}/{id}")
     public String seckillByMultiThread(@PathVariable("userId") Long userId, @PathVariable("id") Long id){
         seckillByService.multiThread(userId, id);
         return "秒杀请求已提交";
+    }
+
+    @GetMapping(value = "/seckillPessimism/{userId}/{id}")
+    public Map<String, String> seckillPessimism(@PathVariable("userId") Long userId, @PathVariable("id") Long id){
+        Map<String, String> stringStringMap = seckillByService.pessimismLock(userId, id);
+        return stringStringMap;
+    }
+
+    @GetMapping(value = "/seckillOptimis/{userId}/{id}")
+    public Map<String, String> seckillOptimis(@PathVariable("userId") Long userId, @PathVariable("id") Long id){
+        Map<String, String> stringStringMap = seckillByService.optimisticLock(userId, id);
+        return stringStringMap;
     }
 
 }

@@ -27,6 +27,8 @@ public class SeckillInfo {
 
     private Long seckillInventory;
 
+    private Long version;
+
     private LocalDateTime startTime;
 
     private LocalDateTime endTime;

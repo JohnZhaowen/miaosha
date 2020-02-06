@@ -24,6 +24,8 @@ public class SeckillByServiceImpl implements SeckillByService {
 
     @Autowired
     private SeckillMapper seckillMapper;
+    @Autowired
+    private SeckillService seckillService;
 
     @Autowired
     private SeckillResultService seckillResultService;
@@ -93,8 +95,9 @@ public class SeckillByServiceImpl implements SeckillByService {
             SeckillInfo seckillInfo = seckillMapper.findSeckillInfoById(id);
             cacheMap.put(Inventory + id, seckillInfo.getSeckillInventory());
             cacheMap.put(SeckillNum + id, seckillInfo.getSeckillNum());
+            inventory = seckillInfo.getSeckillInventory();
         }
-        inventory = cacheMap.get(Inventory + id);
+
         Long seckillNum = cacheMap.get(SeckillNum + id);
         seckillNum++;
         cacheMap.put(SeckillNum + id, seckillNum);
@@ -139,6 +142,59 @@ public class SeckillByServiceImpl implements SeckillByService {
 
         }
     }
+
+    @Transactional
+    public Map<String, String> pessimismLock(long userId, long id){
+        Map<String, String> result = new HashMap<>();
+
+        SeckillInfo seckillInfo = seckillMapper.selectForUpdate(id);
+        Long seckillInventory = seckillInfo.getSeckillInventory();
+        Long seckillNum = seckillInfo.getSeckillNum();
+        if(seckillNum >= seckillInventory){
+            log.info("卖光了，谢谢惠顾！");
+            result.put("flag", "fail");
+            result.put("date", "卖光了，谢谢惠顾！");
+            return result;
+        }
+        seckillInfo.setSeckillNum(++seckillNum);
+        seckillMapper.updateSeckillInfoBySeckNum(seckillInfo);
+        result.put("flag", "success");
+        result.put("date", "秒杀成功");
+        return result;
+    }
+
+
+    @Transactional
+    public Map<String, String> optimisticLock(long userId, long id){
+        Map<String, String> result = new HashMap<>();
+        SeckillInfo seckillInfo = seckillMapper.findSeckillInfoById(id);
+
+        Long version = seckillInfo.getVersion();
+        Long seckillInventory = seckillInfo.getSeckillInventory();
+        Long seckillNum = seckillInfo.getSeckillNum();
+
+        if(seckillNum >= seckillInventory){
+            log.info("卖光了，谢谢惠顾！");
+            result.put("flag", "fail");
+            result.put("date", "卖光了，谢谢惠顾！");
+            return result;
+        }
+        seckillInfo.setSeckillNum(++seckillNum);
+        int updateNum = seckillMapper.updateSeckillInfoByVersion(seckillInfo);
+        if(updateNum > 0){
+            log.info("秒杀成功");
+            result.put("flag", "success");
+            result.put("date", "秒杀成功");
+        } else {
+            log.info("操作失败，请重试");
+            result.put("flag", "fail");
+            result.put("date", "操作失败，请重试！");
+        }
+        return result;
+    }
+
+
+
 
 }
 

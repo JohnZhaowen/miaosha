@@ -12,4 +12,6 @@ public interface SeckillService {
     List<SeckillInfo> listSeckillInfo(SeckillForm seckillForm);
 
     void updateSeckillInfoBy(SeckillInfo seckillInfo);
+
+    SeckillInfo selectForUpdate(Long id);
 }

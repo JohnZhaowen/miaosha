@@ -63,4 +63,10 @@ public class SeckillServiceImpl implements SeckillService {
     public void updateSeckillInfoBy(SeckillInfo seckillInfo) {
         seckillMapper.updateSeckillInfoBy(seckillInfo);
     }
+
+    @Override
+    public SeckillInfo selectForUpdate(Long id) {
+        return seckillMapper.selectForUpdate(id);
+    }
+
 }

@@ -4,14 +4,14 @@
 
     <insert id="saveSeckill" parameterType="com.john.miaosha.entity.SeckillInfo">
         INSERT INTO seckill
-        (product_id, shop_id, state, seckill_num, product_price, seckill_price, product_tile, product_name, seckill_inventory, start_time, end_time, create_time)
+        (product_id, shop_id, state, seckill_num, product_price, seckill_price, product_tile, product_name, seckill_inventory, version, start_time, end_time, create_time)
         VALUES
-        (#{productId}, #{shopId}, #{state}, #{seckillNum}, #{productPrice}, #{seckillPrice}, #{productTile}, #{productName}, #{seckillInventory}, #{startTime}, #{endTime}, current_timestamp )
+        (#{productId}, #{shopId}, #{state}, #{seckillNum}, #{productPrice}, #{seckillPrice}, #{productTile}, #{productName}, #{seckillInventory}, 1, #{startTime}, #{endTime}, current_timestamp )
     </insert>
 
     <select id="listSeckillInfo" parameterType="com.john.miaosha.vo.SeckillInfoVo" resultType="com.john.miaosha.entity.SeckillInfo">
         SELECT id, product_id productId, shop_id shopId, state, seckill_num seckillNum, product_price productPrice, product_tile productTile, product_name productName,
-        seckill_price seckillPrice, seckill_inventory seckillInventory, start_time startTime, end_time endTime, create_time createTime, approve_time approveTime
+        seckill_price seckillPrice, seckill_inventory seckillInventory, version, start_time startTime, end_time endTime, create_time createTime, approve_time approveTime
         FROM seckill
         <where>
             <include refid="seckillInfoCondition"></include>
@@ -44,12 +44,27 @@
         WHERE id = #{id}
     </update>
 
+    <update id="updateSeckillInfoByVersion" parameterType="com.john.miaosha.entity.SeckillInfo">
+        UPDATE seckill
+        SET seckill_num = #{seckillNum}, version = #{version} + 1, update_time = current_timestamp
+        WHERE id = #{id} AND version = #{version}
+    </update>
+
     <select id="findSeckillInfoById" resultType="com.john.miaosha.entity.SeckillInfo">
         SELECT id, product_id productId, shop_id shopId, state, seckill_num seckillNum, product_price productPrice, product_tile productTile, product_name productName,
-        seckill_price seckillPrice, seckill_inventory seckillInventory, start_time startTime, end_time endTime, create_time createTime, approve_time approveTime
+        seckill_price seckillPrice, seckill_inventory seckillInventory, version, start_time startTime, end_time endTime, create_time createTime, approve_time approveTime
         FROM seckill
         WHERE id = #{id}
         LIMIT 1
+    </select>
+
+    <select id="selectForUpdate" resultType="com.john.miaosha.entity.SeckillInfo">
+        SELECT id, product_id productId, shop_id shopId, state, seckill_num seckillNum, product_price productPrice, product_tile productTile, product_name productName,
+        seckill_price seckillPrice, seckill_inventory seckillInventory, version, start_time startTime, end_time endTime, create_time createTime, approve_time approveTime
+        FROM seckill
+        WHERE id = #{id}
+        LIMIT 1
+        FOR UPDATE
     </select>
 
 </mapper>
