@@ -1,10 +1,10 @@
-package com.john.miaosha.seckill.util;
+package com.john.miaosha.utils;
 
 import redis.clients.jedis.Jedis;
 
 import java.util.Collections;
 
-public class RedisLockUtil {
+public class RedisUtil {
 
     private static Jedis jedis = new Jedis("127.0.0.1", 6379);
 
@@ -24,21 +24,11 @@ public class RedisLockUtil {
         return RELEASE_SUCCESS.equals(result);
     }
 
-    public static void main(String[] args) {
-        boolean firstSuccess1 = tryGetDistributedLock("lockKey1", "123", 10000);
-        boolean firstSuccess2 = tryGetDistributedLock("lockKey1", "123", 10000);
-        System.out.println("第1次获取锁：" + firstSuccess1);
-        System.out.println("第2次获取锁：" + firstSuccess2);
-
-        boolean firstRelease1 = releaseDistributedLock("lockKey1", "1234");
-        boolean firstRelease2 = releaseDistributedLock("lockKey1", "123");
-        boolean firstRelease3 = releaseDistributedLock("lockKey1", "123");
-
-        System.out.println("第1次释放锁：" + firstRelease1);
-        System.out.println("第2次释放锁：" + firstRelease2);
-        System.out.println("第3次释放锁：" + firstRelease3);
-
-
+    public static String get(String key){
+        return jedis.get(key);
+    }
+    public static void set(String key, String value){
+        jedis.set(key, value);
     }
 
 }

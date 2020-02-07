@@ -17,4 +17,6 @@ public interface SeckillByService {
     void queueAndThread(long userId, long id);
 
     Map<String, String> redisLock(long userId, long id);
+
+    void seckillFuture(long userId, long id);
 }
