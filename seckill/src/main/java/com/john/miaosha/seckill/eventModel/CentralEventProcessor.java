@@ -14,7 +14,7 @@ public class CentralEventProcessor {
 
     public BlockingDeque<Event> centralQueue = new LinkedBlockingDeque<>();
 
-    public CentralDistributeHandle centralDistribute = new CentralDistributeHandle();
+    public CentralDistributeHandle centralDistributeHandle = new CentralDistributeHandle();
 
     public EventProess eventProess = new EventProess();
 
@@ -25,7 +25,7 @@ public class CentralEventProcessor {
     }
 
     public void process(Event event){
-        centralDistribute.handle(event);
+        centralDistributeHandle.handle(event);
     }
 
     class CentralDistributeHandle implements Handler {

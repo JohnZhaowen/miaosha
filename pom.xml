@@ -13,6 +13,7 @@
         <module>productType</module>
         <module>product</module>
         <module>seckill</module>
+        <module>order</module>
     </modules>
 
     <parent>

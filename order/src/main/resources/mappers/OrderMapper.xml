@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.john.miaosha.order.mapper.OrderMapper">
+
+    <insert id="saveOrder" parameterType="com.john.miaosha.entity.SeckillOrder">
+        INSERT INTO `order`
+        (seckill_product_id, product_id, pay_amount, user_id, merchant_id, pay_time, pay_status, pay_type, receive_address,
+        receive_phone, receive_name, trade_serial_num, num, order_flag, create_time)
+        VALUES
+        (#{seckillProductId}, #{productId}, #{payAmount}, #{userId}, #{merchantId}, #{payTime}, #{payStatus}, #{payType}, #{receiveAddress}
+        , #{receivePhone}, #{receiveName}, #{tradeSerialNum}, #{num}, #{orderFlag}, current_timestamp)
+    </insert>
+
+</mapper>
