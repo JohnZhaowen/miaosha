@@ -4,6 +4,9 @@ package com.john.miaosha.seckill.controller;
 import com.john.miaosha.entity.ProductInfo;
 import com.john.miaosha.entity.SeckillInfo;
 import com.john.miaosha.form.SeckillForm;
+import com.john.miaosha.seckill.eventModel.CentralEventProcessor;
+import com.john.miaosha.seckill.eventModel.SeckillEvent;
+import com.john.miaosha.seckill.eventModel.SeckillState;
 import com.john.miaosha.seckill.service.SeckillFacadeService;
 import com.john.miaosha.seckill.service.SeckillService;
 import com.john.miaosha.seckill.strategy.DistributedLockAndFutureSeckill;
@@ -20,7 +23,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 @RequestMapping("/seckill")
@@ -40,9 +42,12 @@ public class SeckillController {
     @Autowired
     private SeckillService seckillService;
 
+    private CentralEventProcessor centralEventProcessor;
+
     @PostConstruct
     public void set(){
         String strategy = RedisUtil.get("seckillStrategy");
+        centralEventProcessor = new CentralEventProcessor();
         if("ProgramLockSeckill".equals(strategy)){
             seckillOperator = programLockSeckill;
         } else if("DistributedLockAndFutureSeckill".equals(strategy)){
@@ -104,7 +109,7 @@ public class SeckillController {
 
     @GetMapping(value = "/seckill/{id}/{userId}")
     public String seckill(@PathVariable("id") Long id, @PathVariable("userId") Long userId, Model model){
-        Map<String, String> seckill = seckillOperator.seckill(id, userId);
+        centralEventProcessor.process(new SeckillEvent("new", SeckillState.NEW, seckillOperator, id, userId));
         return "seckillPortal";
     }
 
