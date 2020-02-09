@@ -1,5 +1,6 @@
 package com.john.miaosha.seckill.service;
 
+import com.john.miaosha.entity.ProductDetail;
 import com.john.miaosha.entity.ProductInfo;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,4 +16,7 @@ public interface SeckillFacadeService {
 
     @GetMapping(value = "/productFacade/findProductById/{id}")
     ProductInfo findProductById(@PathVariable("id") Long id);
+
+    @GetMapping(value = "/productFacade/findProductDetailById/{id}")
+    ProductDetail findProductDetailById(@PathVariable("id") Long id);
 }

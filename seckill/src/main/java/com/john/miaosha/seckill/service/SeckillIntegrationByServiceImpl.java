@@ -84,8 +84,8 @@ public class SeckillIntegrationByServiceImpl implements SeckillIntegrationByServ
             seckillResult.setUserId(userId);
             seckillResult.setProductId(seckillInfo.getProductId());
             seckillResult.setSeckillId(id);
-            seckillResult.setResult(1);
-            seckillResult.setResultData("秒杀成功");
+            seckillResult.setResult(2);
+            seckillResult.setResultData("正在生成订单");
 
             seckillInfo.setSeckillNum(seckillNum);
             if(seckillNum > inventory){
@@ -93,7 +93,7 @@ public class SeckillIntegrationByServiceImpl implements SeckillIntegrationByServ
                 seckillResult.setResult(0);
                 seckillResult.setResultData("秒杀失败");
             } else {
-                log.info("秒杀成功");
+                log.info("正在生成订单");
                 seckillMapper.updateSeckillInfoBySeckNum(seckillInfo);
             }
             seckillResultService.saveSeckillResult(seckillResult);

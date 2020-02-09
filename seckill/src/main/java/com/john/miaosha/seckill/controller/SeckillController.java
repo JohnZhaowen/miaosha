@@ -1,14 +1,14 @@
 package com.john.miaosha.seckill.controller;
 
 
-import com.john.miaosha.entity.ProductInfo;
-import com.john.miaosha.entity.SeckillInfo;
+import com.john.miaosha.entity.*;
 import com.john.miaosha.form.SeckillForm;
 import com.john.miaosha.seckill.eventModel.CentralEventProcessor;
 import com.john.miaosha.seckill.eventModel.SeckillEvent;
 import com.john.miaosha.seckill.eventModel.SeckillState;
 import com.john.miaosha.seckill.service.MessageFacadeService;
 import com.john.miaosha.seckill.service.SeckillFacadeService;
+import com.john.miaosha.seckill.service.SeckillResultService;
 import com.john.miaosha.seckill.service.SeckillService;
 import com.john.miaosha.seckill.strategy.DistributedLockAndFutureSeckill;
 import com.john.miaosha.seckill.strategy.ProgramLockSeckill;
@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.annotation.PostConstruct;
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 @Controller
@@ -44,6 +45,8 @@ public class SeckillController {
 
     @Autowired
     private SeckillService seckillService;
+    @Autowired
+    private SeckillResultService seckillResultService;
 
     private CentralEventProcessor centralEventProcessor;
 
@@ -118,10 +121,17 @@ public class SeckillController {
         return "seckillPortal";
     }
 
-    @GetMapping(value = "/seckill")
-    public String seckill(Long id, Long userId, Long merchantId, Model model){
-        centralEventProcessor.process(new SeckillEvent("new", SeckillState.NEW, seckillOperator, id, userId, merchantId, messageFacadeService));
-        return "seckillPortal";
+    @PostMapping(value = "/seckill")
+    public String seckill(Long id, Long merchantId, HttpServletRequest req){
+        UserInfo userInfo = (UserInfo) req.getSession().getAttribute("userInfo");
+        if(userInfo == null){
+            return "toLogin";
+        } else {
+            centralEventProcessor.process(new SeckillEvent("new", SeckillState.NEW, seckillOperator,
+                    id, userInfo.getId(), merchantId, messageFacadeService));
+            return "redirect:/seckill/listSeckillResult";
+        }
+
     }
 
     @GetMapping(value = "/toSetseckillStrategy")
@@ -142,6 +152,35 @@ public class SeckillController {
 
         RedisUtil.set("seckillStrategy", strategy);
         return "seckillPortal";
+    }
+
+
+    @GetMapping(value = "/toSeckillProductDetail")
+    public String toSeckillProductDetail(Long id, Model model){
+
+        SeckillInfo seckillInfo = seckillService.findSeckillInfoById(id);
+        ProductDetail productDetail = seckillFacadeService.findProductDetailById(seckillInfo.getProductId());
+        ProductInfo productInfo = seckillFacadeService.findProductById(seckillInfo.getProductId());
+
+
+        model.addAttribute("seckillInfo", seckillInfo);
+        model.addAttribute("productDetail", productDetail);
+        model.addAttribute("merchantId", productInfo.getMerchantId());
+        model.addAttribute("remainNum", seckillInfo.getSeckillInventory() - seckillInfo.getSeckillNum());
+        return "seckillProductDetail";
+    }
+
+    @GetMapping(value = "/listSeckillResult")
+    public String listSeckillResult(Model model, HttpServletRequest req){
+
+        UserInfo userInfo = (UserInfo) req.getSession().getAttribute("userInfo");
+        if(userInfo == null){
+            return "toLogin";
+        } else {
+            List<SeckillResult> seckillResults = seckillResultService.findSeckillResultByUserId(userInfo.getId());
+            model.addAttribute("list", seckillResults);
+            return "listSeckillResult";
+        }
     }
 
 

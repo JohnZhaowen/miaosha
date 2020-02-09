@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Title</title>
+</head>
+<body>
+<form action="seckill" th:method="post">
+    <input type="hidden" name="id" th:value="${seckillInfo.id}">
+    <input type="hidden" name="merchantId" th:value="${merchantId}">
+    标题:<span th:text="${seckillInfo.getProductTitle}"/> <br/>
+    名称:<span th:text="${seckillInfo.productName}"/> <br/>
+    秒杀价格:<span th:text="${seckillInfo.seckillPrice}"/> <br/>
+    秒杀原价:<span th:text="${seckillInfo.productPrice}"/> <br/>
+    产地:<span th:text="${productDetail.productPlace}"/> <br/>
+    品牌:<span th:text="${productDetail.productBrand}"/><br/>
+    描述:<span th:text="${productDetail.productDesc}"/><br/>
+    重量:<span th:text="${productDetail.productWeight}"/><br/>
+    图片地址:<span th:text="${productDetail.productDetailPictureUrl}"/><br/>
+    规格和包装:<span th:text="${productDetail.specificationAndPack}"/><br/>
+    剩余数量:<span th:text="${remainNum}"/><br/>
+    <input th:type="submit" th:value="立即秒杀">
+</form>
+</body>
+</html>

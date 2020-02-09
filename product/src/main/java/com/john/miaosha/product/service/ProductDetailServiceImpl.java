@@ -18,4 +18,9 @@ public class ProductDetailServiceImpl implements ProductDetailService {
     public void saveProductDetail(ProductDetail productDetail) {
         productDetailMapper.saveProductDetail(productDetail);
     }
+
+    @Override
+    public ProductDetail findProductDetailById(Long id) {
+        return productDetailMapper.findProductDetailById(id);
+    }
 }

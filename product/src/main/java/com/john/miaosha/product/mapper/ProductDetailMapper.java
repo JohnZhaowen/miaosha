@@ -5,4 +5,6 @@ import com.john.miaosha.entity.ProductDetail;
 public interface ProductDetailMapper {
 
     void saveProductDetail(ProductDetail productDetail);
+
+    ProductDetail findProductDetailById(Long id);
 }

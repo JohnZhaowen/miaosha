@@ -7,12 +7,12 @@
 <body>
 <table border="1">
     <tr>
+        <td>商品标题</td>
         <td>商品编号</td>
         <td>店铺编号</td>
         <td>秒杀数量</td>
         <td>商品价格</td>
         <td>秒杀价格</td>
-        <td>商品标题</td>
         <td>商品名称</td>
         <td>秒杀库存</td>
         <td>秒杀开始时间</td>
@@ -20,12 +20,12 @@
         <td>创建时间</td>
     </tr>
     <tr th:each="entity:${list}">
+        <td><a href="#" th:href="@{/seckill/toSeckillProductDetail(id=${entity.id})}"><span th:text="${entity.getProductTitle}"/></a></td>
         <td><span th:text="${entity.productId}"/></td>
         <td><span th:text="${entity.shopId}"/></td>
         <td><span th:text="${entity.seckillNum}"/></td>
         <td><span th:text="${entity.productPrice}"/></td>
         <td><span th:text="${entity.seckillPrice}"/></td>
-        <td><span th:text="${entity.productTile}"/></td>
         <td><span th:text="${entity.productName}"/></td>
         <td><span th:text="${entity.seckillInventory}"/></td>
         <td><span th:text="${entity.startTime}"/></td>

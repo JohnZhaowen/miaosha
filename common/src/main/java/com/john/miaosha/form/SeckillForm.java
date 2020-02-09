@@ -11,7 +11,7 @@ public class SeckillForm {
 
     private Integer state;
 
-    private String productTile;
+    private String productTitle;
 
     private String productName;
 

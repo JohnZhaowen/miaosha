@@ -10,5 +10,12 @@
         (#{productId}, #{productPlace}, #{productBrand}, #{productDesc}, #{productWeight}, #{productDetailPictureUrl}, #{specificationAndPack})
     </insert>
 
+    <select id="findProductDetailById" resultType="com.john.miaosha.entity.ProductDetail">
+        SELECT id, product_id productId, product_place productPlace, product_brand productBrand, product_desc productDesc,
+        product_weight productWeight, product_detail_picture_url productDetailPictureUrl, specification_and_pack specificationAndPack
+        FROM product_detail
+        WHERE id = #{id}
+    </select>
+
 
 </mapper>

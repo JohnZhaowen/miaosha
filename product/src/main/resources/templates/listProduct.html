@@ -37,6 +37,7 @@
             <span th:switch="${entity.state}">
                 <span th:case="0"><a href="#" th:href="@{/product/updateState(state=1,id=${entity.id})}">通过</a> || <a href="#" th:href="@{/product/updateState(state=2,id=${entity.id})}">不通过</a></span>
                 <span th:case="1"><a href="#" th:href="@{/product/updateState(state=3,id=${entity.id})}">上架</a> || <a href="#" th:href="@{/product/updateState(state=4,id=${entity.id})}">下架</a></span>
+                |<a href="#" th:href="@{/product/toAddProductDetail(id=${entity.id})}">添加商品详情</a>
             </span>
         </td>
     </tr>

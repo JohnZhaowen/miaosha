@@ -21,6 +21,7 @@
 
     <select id="findUserByAccount" resultType="com.john.miaosha.entity.UserInfo">
         SELECT
+            id,
             account,
             encryption_password encryptionPassword
         FROM user

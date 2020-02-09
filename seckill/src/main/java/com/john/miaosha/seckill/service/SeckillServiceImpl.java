@@ -36,7 +36,7 @@ public class SeckillServiceImpl implements SeckillService {
             seckillInfo.setSeckillInventory(productInfo.getProductInventory());
             seckillInfo.setSeckillNum(0L);
             seckillInfo.setProductName(seckillForm.getProductName());
-            seckillInfo.setProductTile(seckillForm.getProductTile());
+            seckillInfo.setProductTitle(seckillForm.getProductTitle());
             seckillInfo.setProductPrice(seckillForm.getProductPrice());
             seckillInfo.setSeckillPrice(seckillForm.getSeckillPrice());
             seckillInfo.setStartTime(LocalDateTime.parse(seckillForm.getStartTime(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));

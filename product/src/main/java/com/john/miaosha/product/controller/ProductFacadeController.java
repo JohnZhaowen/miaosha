@@ -1,6 +1,8 @@
 package com.john.miaosha.product.controller;
 
+import com.john.miaosha.entity.ProductDetail;
 import com.john.miaosha.entity.ProductInfo;
+import com.john.miaosha.product.service.ProductDetailService;
 import com.john.miaosha.product.service.ProductInfoService;
 import com.john.miaosha.vo.ProductInfoCondition;
 import com.john.miaosha.vo.ProductInfoVo;
@@ -19,6 +21,10 @@ public class ProductFacadeController {
     @Autowired
     private ProductInfoService productInfoService;
 
+    @Autowired
+    private ProductDetailService productDetailService;
+
+
     @GetMapping(value = "/listProductBy/{shopId}")
     public List<ProductInfo> listProductBy(@PathVariable("shopId") Long shopId){
         ProductInfoVo productInfoVo = new ProductInfoVo();
@@ -33,6 +39,11 @@ public class ProductFacadeController {
     @GetMapping(value = "/findProductById/{id}")
     public ProductInfo findProductById(@PathVariable("id") Long id){
         return productInfoService.findProductById(id);
+    }
+
+    @GetMapping(value = "/findProductDetailById/{id}")
+    public ProductDetail findProductDetailById(@PathVariable("id") Long id){
+        return productDetailService.findProductDetailById(id);
     }
 
 }

@@ -1,6 +1,7 @@
 package com.john.miaosha.product.controller;
 
 
+import com.john.miaosha.entity.ProductDetail;
 import com.john.miaosha.entity.ProductInfo;
 import com.john.miaosha.product.service.ProductDetailService;
 import com.john.miaosha.product.service.ProductInfoService;
@@ -55,5 +56,18 @@ public class ProductController {
         productInfoService.updateProductInfoBy(productInfo);
         return "listProduct";
     }
+
+    @GetMapping(value = "/toAddProductDetail")
+    public String toAddProductDetail(Long id, Model model){
+        ProductInfo productInfo = productInfoService.findProductById(id);
+        model.addAttribute("productInfo", productInfo);
+        return "toAddProductDetail";
+    }
+    @PostMapping(value = "/addProductDetail")
+    public String addProductDetail(ProductDetail productDetail){
+        productDetailService.saveProductDetail(productDetail);
+        return "redirect:/product/listProduct";
+    }
+
 
 }

@@ -21,4 +21,8 @@ public class SeckillResult {
 
     private LocalDateTime secTime;
 
+    private String productName;
+
+    private String productTitle;
+
 }

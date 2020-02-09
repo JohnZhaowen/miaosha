@@ -6,6 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @Slf4j
 public class SeckillResultServiceImpl implements SeckillResultService {
@@ -18,5 +20,8 @@ public class SeckillResultServiceImpl implements SeckillResultService {
         seckillResultMapper.saveSeckillResult(seckillResult);
     }
 
-
+    @Override
+    public List<SeckillResult> findSeckillResultByUserId(Long userId) {
+        return seckillResultMapper.findSeckillResultByUserId(userId);
+    }
 }

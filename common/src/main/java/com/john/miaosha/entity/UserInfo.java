@@ -7,7 +7,7 @@ import java.io.Serializable;
 @Data
 public class UserInfo implements Serializable {
 
-    private Integer id;
+    private Long id;
 
     private String account;
 

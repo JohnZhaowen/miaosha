@@ -9,6 +9,12 @@
         (#{userId}, #{productId}, #{seckillId}, #{result}, #{resultData}, current_timestamp )
     </insert>
 
+    <select id="findSeckillResultByUserId" resultType="com.john.miaosha.entity.SeckillResult">
+        SELECT a.user_id userId, a.product_id productId, a.seckill_id seckillId, a.result, a.result_data resultData, a.sec_time secTime,
+            b.product_name productName, b.product_title productTitle
+        FROM seckill_result a LEFT JOIN seckill b ON a.seckill_id = b.id
+        WHERE a.user_id = #{userId}
+    </select>
 
 
 </mapper>
