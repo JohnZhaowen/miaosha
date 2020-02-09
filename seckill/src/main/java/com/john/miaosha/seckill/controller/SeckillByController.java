@@ -65,7 +65,7 @@ public class SeckillByController {
     }
     @GetMapping(value = "/seckillByFutureAndRedisLock/{userId}/{id}")
     public String seckillByFutureAndRedisLock(@PathVariable("userId") Long userId, @PathVariable("id") Long id){
-        seckillIntegrationByService.seckollByDistributedLockAndFuture(userId, id);
+        seckillIntegrationByService.seckillByDistributedLockAndFuture(userId, id);
         return "秒杀任务提交成功";
     }
 

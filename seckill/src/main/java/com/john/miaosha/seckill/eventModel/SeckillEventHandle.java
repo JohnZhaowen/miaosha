@@ -33,11 +33,12 @@ public class SeckillEventHandle implements Handler {
             try {
                 log.info("开始秒杀");
                 SeckillEvent seckillEvent = (SeckillEvent)event;
-                seckillEvent.getSeckillOperator().seckill(seckillEvent.getId(), seckillEvent.getUserId());
-
-                Event completeEvent = new SeckillEvent("complete", SeckillState.COPLETE, seckillEvent.getSeckillOperator(), seckillEvent.getId(),
-                        seckillEvent.getUserId(), seckillEvent.getMerchantId(), seckillEvent.getMessageFacadeService());
-                centralEventProcessor.centralQueue.put(completeEvent);
+                Map<String, String> seckillResult = seckillEvent.getSeckillOperator().seckill(seckillEvent.getId(), seckillEvent.getUserId());
+                if("1".equals(seckillResult.get("result"))){
+                    Event completeEvent = new SeckillEvent("complete", SeckillState.COPLETE, seckillEvent.getSeckillOperator(), seckillEvent.getId(),
+                            seckillEvent.getUserId(), seckillEvent.getMerchantId(), seckillEvent.getMessageFacadeService());
+                    centralEventProcessor.centralQueue.put(completeEvent);
+                }
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

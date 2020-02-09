@@ -1,5 +1,10 @@
 package com.john.miaosha.seckill.service;
 
+import com.john.miaosha.seckill.entity.SeckillUniqueKey;
+
+import java.util.Map;
+import java.util.concurrent.Future;
+
 public interface SeckillIntegrationByService {
-    void seckollByDistributedLockAndFuture(long userId, long id);
+    Map<SeckillUniqueKey, Future<Integer>> seckillByDistributedLockAndFuture(long userId, long id);
 }

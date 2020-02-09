@@ -2,6 +2,7 @@ package com.john.miaosha.seckill.service;
 
 import com.john.miaosha.entity.SeckillInfo;
 import com.john.miaosha.entity.SeckillResult;
+import com.john.miaosha.seckill.entity.SeckillUniqueKey;
 import com.john.miaosha.seckill.mapper.SeckillMapper;
 import com.john.miaosha.utils.RedisUtil;
 import lombok.AllArgsConstructor;
@@ -22,7 +23,7 @@ import java.util.concurrent.Future;
 @Slf4j
 public class SeckillIntegrationByServiceImpl implements SeckillIntegrationByService {
 
-    private Map<SeckillUniqueKey, Future> cacheSeckillResult = new HashMap<>();
+    private Map<SeckillUniqueKey, Future<Integer>> cacheSeckillResult = new HashMap<>();
 
     private ExecutorService executor = Executors.newCachedThreadPool();
 
@@ -34,9 +35,10 @@ public class SeckillIntegrationByServiceImpl implements SeckillIntegrationByServ
     private SeckillResultService seckillResultService;
 
     @Override
-    public void seckollByDistributedLockAndFuture(long userId, long id){
+    public Map<SeckillUniqueKey, Future<Integer>> seckillByDistributedLockAndFuture(long userId, long id){
         Future<Integer> future = executor.submit(new SeckillFuture(id, userId));
         cacheSeckillResult.put(new SeckillUniqueKey(id, userId), future);
+        return cacheSeckillResult;
     }
 
     @Data
@@ -100,12 +102,6 @@ public class SeckillIntegrationByServiceImpl implements SeckillIntegrationByServ
         }
     }
 
-    @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
-    class SeckillUniqueKey {
-        private Long id;
-
-        private Long userId;
-    }
 }
+
+
