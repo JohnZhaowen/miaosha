@@ -69,4 +69,8 @@ public class SeckillServiceImpl implements SeckillService {
         return seckillMapper.selectForUpdate(id);
     }
 
+    @Override
+    public SeckillInfo findSeckillInfoById(Long id) {
+        return seckillMapper.findSeckillInfoById(id);
+    }
 }

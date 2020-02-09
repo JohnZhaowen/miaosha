@@ -1,5 +1,6 @@
 package com.john.miaosha.seckill.eventModel;
 
+import com.john.miaosha.form.OrderRequest;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -30,13 +31,9 @@ public class OrderEventHandle implements Handler {
     class OrderNewStateProcessor implements StateProcessor {
         @Override
         public void process(Event event) {
-            try {
-                log.info("开始订单处理");
-                Event completeEvent = new OrderEvent("complete", OrderState.COPLETE);
-                centralEventProcessor.centralQueue.put(completeEvent);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+            log.info("开始订单处理");
+            OrderEvent orderEvent = (OrderEvent)event;
+            orderEvent.getMessageFacadeService().sendMsg(new OrderRequest(orderEvent.getId(), orderEvent.getUserId(), orderEvent.getMerchantId()));
         }
     }
     class OrderCompleteStateProcessor implements StateProcessor {

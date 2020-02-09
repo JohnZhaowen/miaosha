@@ -35,7 +35,8 @@ public class SeckillEventHandle implements Handler {
                 SeckillEvent seckillEvent = (SeckillEvent)event;
                 seckillEvent.getSeckillOperator().seckill(seckillEvent.getId(), seckillEvent.getUserId());
 
-                Event completeEvent = new SeckillEvent("complete", SeckillState.COPLETE);
+                Event completeEvent = new SeckillEvent("complete", SeckillState.COPLETE, seckillEvent.getSeckillOperator(), seckillEvent.getId(),
+                        seckillEvent.getUserId(), seckillEvent.getMerchantId(), seckillEvent.getMessageFacadeService());
                 centralEventProcessor.centralQueue.put(completeEvent);
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -47,7 +48,9 @@ public class SeckillEventHandle implements Handler {
         public void process(Event event) {
             try {
                 log.info("结束秒杀");
-                Event orderNewEvent = new OrderEvent("new", OrderState.NEW);
+                SeckillEvent seckillEvent = (SeckillEvent) event;
+                Event orderNewEvent = new OrderEvent("new", OrderState.NEW, seckillEvent.getId(),
+                        seckillEvent.getUserId(), seckillEvent.getMerchantId(), seckillEvent.getMessageFacadeService());
                 centralEventProcessor.centralQueue.put(orderNewEvent);
             } catch (InterruptedException e) {
                 e.printStackTrace();

@@ -14,4 +14,6 @@ public interface SeckillService {
     void updateSeckillInfoBy(SeckillInfo seckillInfo);
 
     SeckillInfo selectForUpdate(Long id);
+
+    SeckillInfo findSeckillInfoById(Long id);
 }

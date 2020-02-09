@@ -15,6 +15,7 @@
         <module>seckill</module>
         <module>order</module>
         <module>rabbitmqtest</module>
+        <module>seckillMessage</module>
     </modules>
 
     <parent>

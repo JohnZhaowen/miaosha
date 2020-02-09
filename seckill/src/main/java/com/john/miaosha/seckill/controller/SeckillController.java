@@ -7,12 +7,14 @@ import com.john.miaosha.form.SeckillForm;
 import com.john.miaosha.seckill.eventModel.CentralEventProcessor;
 import com.john.miaosha.seckill.eventModel.SeckillEvent;
 import com.john.miaosha.seckill.eventModel.SeckillState;
+import com.john.miaosha.seckill.service.MessageFacadeService;
 import com.john.miaosha.seckill.service.SeckillFacadeService;
 import com.john.miaosha.seckill.service.SeckillService;
 import com.john.miaosha.seckill.strategy.DistributedLockAndFutureSeckill;
 import com.john.miaosha.seckill.strategy.ProgramLockSeckill;
 import com.john.miaosha.seckill.strategy.SeckillOperator;
 import com.john.miaosha.utils.RedisUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,6 +28,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/seckill")
+@Slf4j
 public class SeckillController {
 
     private SeckillOperator seckillOperator;
@@ -44,9 +47,17 @@ public class SeckillController {
 
     private CentralEventProcessor centralEventProcessor;
 
+    @Autowired
+    private MessageFacadeService messageFacadeService;
+
     @PostConstruct
     public void set(){
-        String strategy = RedisUtil.get("seckillStrategy");
+        String strategy = null;
+        try {
+            strategy = RedisUtil.get("seckillStrategy");
+        } catch (Exception e) {
+            log.error("redis获取策略失败...");
+        }
         centralEventProcessor = new CentralEventProcessor();
         if("ProgramLockSeckill".equals(strategy)){
             seckillOperator = programLockSeckill;
@@ -107,9 +118,9 @@ public class SeckillController {
         return "seckillPortal";
     }
 
-    @GetMapping(value = "/seckill/{id}/{userId}")
-    public String seckill(@PathVariable("id") Long id, @PathVariable("userId") Long userId, Model model){
-        centralEventProcessor.process(new SeckillEvent("new", SeckillState.NEW, seckillOperator, id, userId));
+    @GetMapping(value = "/seckill")
+    public String seckill(Long id, Long userId, Long merchantId, Model model){
+        centralEventProcessor.process(new SeckillEvent("new", SeckillState.NEW, seckillOperator, id, userId, merchantId, messageFacadeService));
         return "seckillPortal";
     }
 
