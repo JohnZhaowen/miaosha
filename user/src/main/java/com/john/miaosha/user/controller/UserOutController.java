@@ -49,7 +49,5 @@ public class UserOutController {
 
             return reuslt;
         }
-
-
     }
 }

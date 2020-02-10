@@ -60,7 +60,7 @@ public class ShopController {
 
 
     @PostMapping(value = "/searchShop")
-    public String applyShop(ShopSearchForm shopSearchForm, Model model){
+    public String searchShop(ShopSearchForm shopSearchForm, Model model){
 
         List<ShopInfo> shopInfos = shopService.listShopInfoBy(shopSearchForm);
         model.addAttribute("listShop", shopInfos);

@@ -1,7 +1,6 @@
 package com.john.miaosha.user.controller;
 
 
-import com.john.miaosha.entity.UserInfo;
 import com.john.miaosha.form.UserRegisterForm;
 import com.john.miaosha.user.service.UserService;
 import org.apache.commons.lang.StringUtils;
@@ -61,6 +60,7 @@ public class UserController {
     public String toLogin(){
         return "toLogin";
     }
+
     @PostMapping(value = "/login")
     public String login(UserRegisterForm userRegisterForm, Model model){
 

@@ -2,7 +2,6 @@ package com.john.miaosha.merchant.controller;
 
 
 import com.john.miaosha.form.MerchantCheckInForm;
-import com.john.miaosha.form.UserRegisterForm;
 import com.john.miaosha.merchant.service.MerchantService;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,18 +61,18 @@ public class MerchantController {
         return "toLogin";
     }
     @PostMapping(value = "/login")
-    public String login(UserRegisterForm userRegisterForm, Model model){
+    public String login(MerchantCheckInForm merchantCheckInForm, Model model){
 
-        if(StringUtils.isBlank(userRegisterForm.getAccount())){
+        if(StringUtils.isBlank(merchantCheckInForm.getAccount())){
             model.addAttribute("error", "用户名不能为空");
             return "toLogin";
         }
 
-        if(StringUtils.isBlank(userRegisterForm.getPassword())){
+        if(StringUtils.isBlank(merchantCheckInForm.getPassword())){
             model.addAttribute("error", "密码不能为空");
             return "toLogin";
         }
-        boolean verifyPassword = merchantService.verifyPassword(userRegisterForm.getAccount(), userRegisterForm.getPassword());
+        boolean verifyPassword = merchantService.verifyPassword(merchantCheckInForm.getAccount(), merchantCheckInForm.getPassword());
         if(!verifyPassword){
             model.addAttribute("error", "用户名或者密码错误，请重新输入");
             return "toLogin";
