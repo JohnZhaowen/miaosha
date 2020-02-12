@@ -20,15 +20,16 @@ public class OrderServiceImpl implements OrderService {
     private OrderFacadeService orderFacadeService;
 
     @Override
-    public void saveOrder(SeckillOrder seckillOrder) {
+    public Long saveOrder(SeckillOrder seckillOrder) {
         seckillOrder.setPayStatus(0);
         seckillOrder.setOrderFlag(0);
         seckillOrder.setTradeSerialNum(TradeNumUtil.generateTradeNum());
         orderMapper.saveOrder(seckillOrder);
+        return seckillOrder.getId();
     }
 
     @Override
-    public void saveOrder(OrderRequest orderRequest) {
+    public SeckillOrder saveOrder(OrderRequest orderRequest) {
         SeckillInfo p = orderFacadeService.findSeckillProductById(orderRequest.getId());
         SeckillOrder seckillOrder = new SeckillOrder();
         seckillOrder.setPayStatus(0);
@@ -39,8 +40,21 @@ public class OrderServiceImpl implements OrderService {
         seckillOrder.setProductId(p.getProductId());
         seckillOrder.setPayAmount(p.getSeckillPrice());
         seckillOrder.setNum(1);
+        seckillOrder.setSeckillResultId(orderRequest.getSeckillResultId());
         seckillOrder.setUserId(orderRequest.getUserId());
         seckillOrder.setMerchantId(orderRequest.getMerchantId());
         orderMapper.saveOrder(seckillOrder);
+
+        return seckillOrder;
+    }
+
+    @Override
+    public SeckillOrder findOrderBy(Long id) {
+        return orderMapper.findOrderBy(id);
+    }
+
+    @Override
+    public void updateOrder(SeckillOrder seckillOrder) {
+        orderMapper.updateOrder(seckillOrder);
     }
 }

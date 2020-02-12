@@ -8,5 +8,6 @@ public interface SeckillResultMapper {
 
     void saveSeckillResult(SeckillResult seckillResult);
     List<SeckillResult> findSeckillResultByUserId(Long userId);
+    void updateSeckillResult(SeckillResult seckillResult);
 
 }

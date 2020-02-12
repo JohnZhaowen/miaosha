@@ -21,13 +21,18 @@ public class DistributedLockAndFutureSeckill implements SeckillOperator {
         result.put("result", "0");
         result.put("data", "秒杀失败");
 
-        Map<SeckillUniqueKey, Future<Integer>> seckillUniqueKeyFutureMap = seckillIntegrationByService.seckillByDistributedLockAndFuture(userId, id);
-        Future<Integer> future = seckillUniqueKeyFutureMap.get(new SeckillUniqueKey(id, userId));
+        Map<SeckillUniqueKey, Future<Map<String, Long>>> seckillUniqueKeyFutureMap = seckillIntegrationByService.seckillByDistributedLockAndFuture(userId, id);
+        Future<Map<String, Long>> future = seckillUniqueKeyFutureMap.get(new SeckillUniqueKey(id, userId));
         try {
-            Integer integer = future.get();
-            if(1 == integer){
+            Map<String, Long> fu = future.get();
+            if(1 == fu.get("seckillResult")){
                 result.put("result", "1");
                 result.put("data", "秒杀成功");
+                result.put("seckillId", fu.get("seckillId").toString());
+            } else if(2 == fu.get("seckillResult")){
+                result.put("result", "2");
+                result.put("data", "正在生成订单");
+                result.put("seckillId", fu.get("seckillId").toString());
             }
         } catch (Exception e) {
             e.printStackTrace();

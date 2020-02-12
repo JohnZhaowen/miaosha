@@ -3,18 +3,27 @@
 <mapper namespace="com.john.miaosha.seckill.mapper.SeckillResultMapper">
 
     <insert id="saveSeckillResult" parameterType="com.john.miaosha.entity.SeckillResult">
+        <selectKey keyProperty="id" order="AFTER" resultType="long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
         INSERT INTO seckill_result
-        (user_id, product_id, seckill_id, result, result_data, sec_time)
+        (order_id, user_id, product_id, seckill_id, result, result_data, sec_time)
         VALUES
-        (#{userId}, #{productId}, #{seckillId}, #{result}, #{resultData}, current_timestamp )
+        (#{orderId}, #{userId}, #{productId}, #{seckillId}, #{result}, #{resultData}, current_timestamp )
     </insert>
 
     <select id="findSeckillResultByUserId" resultType="com.john.miaosha.entity.SeckillResult">
-        SELECT a.user_id userId, a.product_id productId, a.seckill_id seckillId, a.result, a.result_data resultData, a.sec_time secTime,
+        SELECT a.order_id orderId, a.user_id userId, a.product_id productId, a.seckill_id seckillId, a.result, a.result_data resultData, a.sec_time secTime,
             b.product_name productName, b.product_title productTitle
         FROM seckill_result a LEFT JOIN seckill b ON a.seckill_id = b.id
         WHERE a.user_id = #{userId}
     </select>
+    
+    <update id="updateSeckillResult" parameterType="com.john.miaosha.entity.SeckillResult">
+        UPDATE seckill_result
+        SET result = #{result}, result_data = #{resultData}, order_id = #{orderId}
+        WHERE id = #{id}
+    </update>
 
 
 </mapper>

@@ -1,19 +1,23 @@
-package com.john.miaosha.form;
+package com.john.miaosha.entity;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class OrderRequest {
+@Data
+public class OrderAckEvent extends Event {
 
     private Long id;
+
+    private Long orderId;
 
     private Long userId;
 
     private Long merchantId;
 
-    private Long seckillResultId;
+    private Long sckillResultId;
+
 }

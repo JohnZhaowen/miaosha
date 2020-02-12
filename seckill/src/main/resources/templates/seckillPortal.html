@@ -20,7 +20,7 @@
         <td>创建时间</td>
     </tr>
     <tr th:each="entity:${list}">
-        <td><a href="#" th:href="@{/seckill/toSeckillProductDetail(id=${entity.id})}"><span th:text="${entity.getProductTitle}"/></a></td>
+        <td><a href="#" th:href="@{/seckill/toSeckillProductDetail(id=${entity.id})}"><span th:text="${entity.productTitle}"/></a></td>
         <td><span th:text="${entity.productId}"/></td>
         <td><span th:text="${entity.shopId}"/></td>
         <td><span th:text="${entity.seckillNum}"/></td>

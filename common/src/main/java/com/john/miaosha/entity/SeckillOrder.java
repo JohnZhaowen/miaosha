@@ -9,6 +9,8 @@ public class SeckillOrder {
 
     private Long id;
 
+    private Long seckillResultId;
+
     private Long seckillProductId;
 
     private Long productId;

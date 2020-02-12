@@ -9,6 +9,8 @@ public class SeckillResult {
 
     private Long id;
 
+    private Long orderId;
+
     private Long userId;
 
     private Long productId;

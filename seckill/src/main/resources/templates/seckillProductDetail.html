@@ -8,7 +8,7 @@
 <form action="seckill" th:method="post">
     <input type="hidden" name="id" th:value="${seckillInfo.id}">
     <input type="hidden" name="merchantId" th:value="${merchantId}">
-    标题:<span th:text="${seckillInfo.getProductTitle}"/> <br/>
+    标题:<span th:text="${seckillInfo.productTitle}"/> <br/>
     名称:<span th:text="${seckillInfo.productName}"/> <br/>
     秒杀价格:<span th:text="${seckillInfo.seckillPrice}"/> <br/>
     秒杀原价:<span th:text="${seckillInfo.productPrice}"/> <br/>

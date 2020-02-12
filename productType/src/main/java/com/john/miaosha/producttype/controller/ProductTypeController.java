@@ -28,7 +28,7 @@ public class ProductTypeController {
     public String addProductTypeInfo(ProductTypeInfo productTypeInfo, Model model){
 
         if(StringUtils.isBlank(productTypeInfo.getProductTypeName())){
-            model.addAttribute("error", "商品类别名称");
+            model.addAttribute("error", "商品类别名称不能为空");
             return "toAddProductTypeInfo";
         }
 

@@ -1,6 +1,10 @@
 package com.john.miaosha.seckill.eventModel;
 
+import com.john.miaosha.entity.Event;
+import com.john.miaosha.entity.SeckillResult;
 import com.john.miaosha.form.OrderRequest;
+import com.john.miaosha.seckill.service.SeckillResultServiceImpl;
+import com.john.miaosha.seckill.util.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -33,7 +37,8 @@ public class OrderEventHandle implements Handler {
         public void process(Event event) {
             log.info("开始订单处理");
             OrderEvent orderEvent = (OrderEvent)event;
-            orderEvent.getMessageFacadeService().sendMsg(new OrderRequest(orderEvent.getId(), orderEvent.getUserId(), orderEvent.getMerchantId()));
+            orderEvent.getMessageFacadeService().sendMsg(new OrderRequest(orderEvent.getId(),
+                    orderEvent.getUserId(), orderEvent.getMerchantId(), orderEvent.getSeckillResultId()));
         }
     }
     class OrderCompleteStateProcessor implements StateProcessor {
@@ -41,6 +46,17 @@ public class OrderEventHandle implements Handler {
         public void process(Event event) {
             try {
                 log.info("结束订单处理");
+                //更新秒杀结果状态
+                OrderEvent orderEvent = (OrderEvent)event;
+                SeckillResult seckillResult = new SeckillResult();
+                seckillResult.setResult(1);
+                seckillResult.setId(orderEvent.getSeckillResultId());
+                seckillResult.setOrderId(orderEvent.getOrderId());
+                seckillResult.setResultData("秒杀成功");
+                seckillResult.setUserId(orderEvent.getUserId());
+                seckillResult.setSeckillId(orderEvent.getId());
+                SpringUtil.getBean(SeckillResultServiceImpl.class).updateSeckillResult(seckillResult);
+
             } catch (Exception e) {
                 e.printStackTrace();
             }

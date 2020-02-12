@@ -5,7 +5,11 @@ import com.john.miaosha.form.OrderRequest;
 
 public interface OrderService {
 
-    void saveOrder(SeckillOrder seckillOrder);
+    Long saveOrder(SeckillOrder seckillOrder);
 
-    void saveOrder(OrderRequest orderRequest);
+    SeckillOrder saveOrder(OrderRequest orderRequest);
+
+    SeckillOrder findOrderBy(Long id);
+
+    void updateOrder(SeckillOrder seckillOrder);
 }

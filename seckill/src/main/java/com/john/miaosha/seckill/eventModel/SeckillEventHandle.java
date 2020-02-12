@@ -1,5 +1,6 @@
 package com.john.miaosha.seckill.eventModel;
 
+import com.john.miaosha.entity.Event;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -34,9 +35,9 @@ public class SeckillEventHandle implements Handler {
                 log.info("开始秒杀");
                 SeckillEvent seckillEvent = (SeckillEvent)event;
                 Map<String, String> seckillResult = seckillEvent.getSeckillOperator().seckill(seckillEvent.getId(), seckillEvent.getUserId());
-                if("1".equals(seckillResult.get("result"))){
+                if("2".equals(seckillResult.get("result"))){
                     Event completeEvent = new SeckillEvent("complete", SeckillState.COPLETE, seckillEvent.getSeckillOperator(), seckillEvent.getId(),
-                            seckillEvent.getUserId(), seckillEvent.getMerchantId(), seckillEvent.getMessageFacadeService());
+                            seckillEvent.getUserId(), seckillEvent.getMerchantId(), Long.valueOf(seckillResult.get("seckillId")), seckillEvent.getMessageFacadeService(), seckillEvent.getSeckillResultService());
                     centralEventProcessor.centralQueue.put(completeEvent);
                 }
             } catch (InterruptedException e) {
@@ -48,10 +49,10 @@ public class SeckillEventHandle implements Handler {
         @Override
         public void process(Event event) {
             try {
-                log.info("结束秒杀");
+                log.info("秒杀成功，开始生成订单");
                 SeckillEvent seckillEvent = (SeckillEvent) event;
-                Event orderNewEvent = new OrderEvent("new", OrderState.NEW, seckillEvent.getId(),
-                        seckillEvent.getUserId(), seckillEvent.getMerchantId(), seckillEvent.getMessageFacadeService());
+                Event orderNewEvent = new OrderEvent("new", OrderState.NEW, seckillEvent.getId(), null,
+                        seckillEvent.getUserId(), seckillEvent.getMerchantId(), seckillEvent.getSeckillResultId(), seckillEvent.getSeckillResultService(), seckillEvent.getMessageFacadeService());
                 centralEventProcessor.centralQueue.put(orderNewEvent);
             } catch (InterruptedException e) {
                 e.printStackTrace();

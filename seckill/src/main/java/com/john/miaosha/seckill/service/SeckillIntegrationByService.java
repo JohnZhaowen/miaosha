@@ -6,5 +6,5 @@ import java.util.Map;
 import java.util.concurrent.Future;
 
 public interface SeckillIntegrationByService {
-    Map<SeckillUniqueKey, Future<Integer>> seckillByDistributedLockAndFuture(long userId, long id);
+    Map<SeckillUniqueKey, Future<Map<String, Long>>> seckillByDistributedLockAndFuture(long userId, long id);
 }

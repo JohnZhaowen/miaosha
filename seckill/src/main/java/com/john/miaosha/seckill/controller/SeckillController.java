@@ -2,14 +2,12 @@ package com.john.miaosha.seckill.controller;
 
 
 import com.john.miaosha.entity.*;
+import com.john.miaosha.form.PayForm;
 import com.john.miaosha.form.SeckillForm;
 import com.john.miaosha.seckill.eventModel.CentralEventProcessor;
 import com.john.miaosha.seckill.eventModel.SeckillEvent;
 import com.john.miaosha.seckill.eventModel.SeckillState;
-import com.john.miaosha.seckill.service.MessageFacadeService;
-import com.john.miaosha.seckill.service.SeckillFacadeService;
-import com.john.miaosha.seckill.service.SeckillResultService;
-import com.john.miaosha.seckill.service.SeckillService;
+import com.john.miaosha.seckill.service.*;
 import com.john.miaosha.seckill.strategy.DistributedLockAndFutureSeckill;
 import com.john.miaosha.seckill.strategy.ProgramLockSeckill;
 import com.john.miaosha.seckill.strategy.SeckillOperator;
@@ -48,10 +46,17 @@ public class SeckillController {
     @Autowired
     private SeckillResultService seckillResultService;
 
+    @Autowired
     private CentralEventProcessor centralEventProcessor;
 
     @Autowired
     private MessageFacadeService messageFacadeService;
+    
+    @Autowired
+    private OrderFacadeService orderFacadeService;
+
+    @Autowired
+    private PayFacadeService payFacadeService;
 
     @PostConstruct
     public void set(){
@@ -61,7 +66,6 @@ public class SeckillController {
         } catch (Exception e) {
             log.error("redis获取策略失败...");
         }
-        centralEventProcessor = new CentralEventProcessor();
         if("ProgramLockSeckill".equals(strategy)){
             seckillOperator = programLockSeckill;
         } else if("DistributedLockAndFutureSeckill".equals(strategy)){
@@ -128,7 +132,7 @@ public class SeckillController {
             return "toLogin";
         } else {
             centralEventProcessor.process(new SeckillEvent("new", SeckillState.NEW, seckillOperator,
-                    id, userInfo.getId(), merchantId, messageFacadeService));
+                    id, userInfo.getId(), merchantId, null, messageFacadeService, seckillResultService));
             return "redirect:/seckill/listSeckillResult";
         }
 
@@ -182,6 +186,31 @@ public class SeckillController {
             return "listSeckillResult";
         }
     }
+
+    @GetMapping(value = "/findOrderBy")
+    public String findOrderBy(Model model, Long id){
+        SeckillOrder seckillOrder = orderFacadeService.findOrderBy(id);
+        ProductInfo productInfo = seckillFacadeService.findProductById(seckillOrder.getProductId());
+
+        model.addAttribute("seckillOrder", seckillOrder);
+        model.addAttribute("productInfo", productInfo);
+        return "saveOrder";
+    }
+
+
+    @PostMapping(value = "/saveOrder")
+    public String saveOrder(SeckillOrder seckillOrder){
+        messageFacadeService.updateOrder(seckillOrder);
+        return "toPay";
+    }
+
+    @GetMapping(value = "/pay")
+    public String pay(PayForm payForm){
+        payFacadeService.payWith(payForm);
+        return "toPay";
+    }
+
+
 
 
 }

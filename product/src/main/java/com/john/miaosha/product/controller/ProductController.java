@@ -30,7 +30,7 @@ public class ProductController {
     }
 
     @PostMapping(value = "/applyProduct")
-    public String registerUser(ProductInfo productInfo, Model model){
+    public String applyProduct(ProductInfo productInfo, Model model){
 
         //TODO字段校验
         productInfo.setState(0);

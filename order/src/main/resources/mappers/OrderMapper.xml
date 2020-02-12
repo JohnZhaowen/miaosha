@@ -3,12 +3,29 @@
 <mapper namespace="com.john.miaosha.order.mapper.OrderMapper">
 
     <insert id="saveOrder" parameterType="com.john.miaosha.entity.SeckillOrder">
+        <selectKey keyProperty="id" order="AFTER" resultType="long">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
         INSERT INTO `order`
-        (seckill_product_id, product_id, pay_amount, user_id, merchant_id, pay_time, pay_status, pay_type, receive_address,
+        (seckill_result_id, seckill_product_id, product_id, pay_amount, user_id, merchant_id, pay_time, pay_status, pay_type, receive_address,
         receive_phone, receive_name, trade_serial_num, num, order_flag, create_time)
         VALUES
-        (#{seckillProductId}, #{productId}, #{payAmount}, #{userId}, #{merchantId}, #{payTime}, #{payStatus}, #{payType}, #{receiveAddress}
+        (#{seckillResultId}, #{seckillProductId}, #{productId}, #{payAmount}, #{userId}, #{merchantId}, #{payTime}, #{payStatus}, #{payType}, #{receiveAddress}
         , #{receivePhone}, #{receiveName}, #{tradeSerialNum}, #{num}, #{orderFlag}, current_timestamp)
     </insert>
+
+    <select id="findOrderBy" parameterType="long" resultType="com.john.miaosha.entity.SeckillOrder">
+        SELECT id, seckill_result_id seckillResultId, seckill_product_id seckillProductId, product_id productId,
+            pay_amount payAmount, user_id userId, merchant_id merchantId, pay_time payTime, pay_status payStatus,
+            pay_type payType, receive_address receiveAddress, receive_phone receivePhone, receive_name receiveName,
+            trade_serial_num tradeSerialNum, num, order_flag orderFlag, create_time createTime
+         FROM `order` WHERE id = #{id}
+    </select>
+
+    <update id="updateOrder" parameterType="com.john.miaosha.entity.SeckillOrder">
+        UPDATE `order`
+        SET receive_address = #{receiveAddress}, receive_phone = #{receivePhone}, receive_name = #{receiveName}
+        WHERE id = #{id}
+    </update>
 
 </mapper>

@@ -16,12 +16,18 @@ public class SeckillResultServiceImpl implements SeckillResultService {
     private SeckillResultMapper seckillResultMapper;
 
     @Override
-    public void saveSeckillResult(SeckillResult seckillResult) {
+    public Long saveSeckillResult(SeckillResult seckillResult) {
         seckillResultMapper.saveSeckillResult(seckillResult);
+        return seckillResult.getId();
     }
 
     @Override
     public List<SeckillResult> findSeckillResultByUserId(Long userId) {
         return seckillResultMapper.findSeckillResultByUserId(userId);
+    }
+
+    @Override
+    public void updateSeckillResult(SeckillResult seckillResult) {
+        seckillResultMapper.updateSeckillResult(seckillResult);
     }
 }

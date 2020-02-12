@@ -16,6 +16,7 @@
         <module>order</module>
         <module>rabbitmqtest</module>
         <module>seckillMessage</module>
+        <module>pay</module>
     </modules>
 
     <parent>

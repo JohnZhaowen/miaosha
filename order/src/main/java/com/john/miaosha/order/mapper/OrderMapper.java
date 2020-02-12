@@ -6,4 +6,8 @@ public interface OrderMapper {
 
     void saveOrder(SeckillOrder seckillOrder);
 
+    SeckillOrder findOrderBy(Long id);
+
+    void updateOrder(SeckillOrder seckillOrder);
+
 }

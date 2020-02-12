@@ -6,7 +6,9 @@ import java.util.List;
 
 public interface SeckillResultService {
 
-    void saveSeckillResult(SeckillResult seckillResult);
+    Long saveSeckillResult(SeckillResult seckillResult);
 
     List<SeckillResult> findSeckillResultByUserId(Long userId);
+
+    void updateSeckillResult(SeckillResult seckillResult);
 }

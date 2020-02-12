@@ -1,6 +1,8 @@
 package com.john.miaosha.seckill.eventModel;
 
+import com.john.miaosha.entity.Event;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -8,6 +10,7 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.LinkedBlockingDeque;
 
 @Slf4j
+@Service
 public class CentralEventProcessor {
 
     public Map<Class<? extends Event>, Handler> distribute = new HashMap<>();

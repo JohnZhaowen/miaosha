@@ -1,5 +1,6 @@
 package com.john.miaosha.seckill.service;
 
+import com.alibaba.fastjson.util.AntiCollisionHashMap;
 import com.john.miaosha.entity.SeckillInfo;
 import com.john.miaosha.entity.SeckillResult;
 import com.john.miaosha.seckill.entity.SeckillUniqueKey;
@@ -23,7 +24,7 @@ import java.util.concurrent.Future;
 @Slf4j
 public class SeckillIntegrationByServiceImpl implements SeckillIntegrationByService {
 
-    private Map<SeckillUniqueKey, Future<Integer>> cacheSeckillResult = new HashMap<>();
+    private Map<SeckillUniqueKey, Future<Map<String, Long>>> cacheSeckillResult = new HashMap<>();
 
     private ExecutorService executor = Executors.newCachedThreadPool();
 
@@ -35,8 +36,8 @@ public class SeckillIntegrationByServiceImpl implements SeckillIntegrationByServ
     private SeckillResultService seckillResultService;
 
     @Override
-    public Map<SeckillUniqueKey, Future<Integer>> seckillByDistributedLockAndFuture(long userId, long id){
-        Future<Integer> future = executor.submit(new SeckillFuture(id, userId));
+    public Map<SeckillUniqueKey, Future<Map<String, Long>>> seckillByDistributedLockAndFuture(long userId, long id){
+        Future<Map<String, Long>> future = executor.submit(new SeckillFuture(id, userId));
         cacheSeckillResult.put(new SeckillUniqueKey(id, userId), future);
         return cacheSeckillResult;
     }
@@ -44,27 +45,26 @@ public class SeckillIntegrationByServiceImpl implements SeckillIntegrationByServ
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    class SeckillFuture implements Callable<Integer> {
+    class SeckillFuture implements Callable<Map<String, Long>> {
 
         private Long id;
 
         private Long userId;
 
         @Override
-        public Integer call() throws Exception {
+        public Map<String, Long> call() {
 
             try {
                 boolean getLock = RedisUtil.tryGetDistributedLock(id + "", userId + "", 50000);
                 if(getLock){
                     return processSeckill();
                 } else {
-                    for(int i = 0; i < 3; i++){
+                    while (true){
                         getLock = RedisUtil.tryGetDistributedLock(id + "", userId + "", 50000);
                         if(getLock){
                             return processSeckill();
                         }
                     }
-                    return 0;
                 }
             } finally {
                 boolean rls = RedisUtil.releaseDistributedLock(id + "", userId + "");
@@ -74,7 +74,7 @@ public class SeckillIntegrationByServiceImpl implements SeckillIntegrationByServ
             }
         }
 
-        private Integer processSeckill() {
+        private Map<String, Long> processSeckill() {
             SeckillInfo seckillInfo = seckillMapper.findSeckillInfoById(id);
             Long inventory = seckillInfo.getSeckillInventory();
             Long seckillNum = seckillInfo.getSeckillNum();
@@ -96,9 +96,13 @@ public class SeckillIntegrationByServiceImpl implements SeckillIntegrationByServ
                 log.info("正在生成订单");
                 seckillMapper.updateSeckillInfoBySeckNum(seckillInfo);
             }
-            seckillResultService.saveSeckillResult(seckillResult);
+            Long resultId = seckillResultService.saveSeckillResult(seckillResult);
 
-            return seckillResult.getResult();
+            Map<String, Long> result = new AntiCollisionHashMap<>();
+            result.put("seckillResult", Long.valueOf(seckillResult.getResult()));
+            result.put("seckillId", resultId);
+
+            return result;
         }
     }
 
