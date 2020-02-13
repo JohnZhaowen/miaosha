@@ -38,4 +38,9 @@ public class SeckillOutProductController {
         orderEvent.setOrderState(OrderState.COPLETE);
         centralEventProcessor.process(orderEvent);
     }
+
+    @PostMapping(value = "/updateSeckillSeckillNum")
+    public void updateSeckillSeckillNum(@RequestBody SeckillInfo seckillInfo){
+        seckillService.seckillNumMinus(seckillInfo);
+    }
 }

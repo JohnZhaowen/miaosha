@@ -20,4 +20,6 @@ public interface SeckillMapper {
     SeckillInfo selectForUpdate(Long id);
 
     int updateSeckillInfoByVersion(SeckillInfo seckillInfo);
+
+    void seckillNumMinus(SeckillInfo seckillInfo);
 }

@@ -1,10 +1,14 @@
 package com.john.miaosha.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class SeckillInfo {
 
     private Long id;
@@ -38,5 +42,9 @@ public class SeckillInfo {
     private LocalDateTime updateTime;
 
     private LocalDateTime createTime;
+
+    public SeckillInfo(Long id){
+        this.id = id;
+    }
 
 }

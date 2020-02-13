@@ -9,6 +9,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 @Slf4j
 public class OrderServiceImpl implements OrderService {
@@ -56,5 +59,16 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public void updateOrder(SeckillOrder seckillOrder) {
         orderMapper.updateOrder(seckillOrder);
+    }
+
+    @Override
+    public List<SeckillOrder> listOrderByCurrentTime() {
+        LocalDateTime overDueTime = LocalDateTime.now().minusMinutes(20);
+        return orderMapper.listOrderByCurrentTime(overDueTime);
+    }
+
+    @Override
+    public void updateOrderByFlag(SeckillOrder seckillOrder) {
+        orderMapper.updateOrderByFlag(seckillOrder);
     }
 }

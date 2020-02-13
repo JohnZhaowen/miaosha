@@ -17,6 +17,8 @@
         <module>rabbitmqtest</module>
         <module>seckillMessage</module>
         <module>pay</module>
+        <module>quartzTest</module>
+        <module>quartzScheduler</module>
     </modules>
 
     <parent>

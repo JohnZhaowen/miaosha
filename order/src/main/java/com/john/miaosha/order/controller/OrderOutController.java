@@ -9,6 +9,8 @@ import com.john.miaosha.order.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/order/out")
 public class OrderOutController {
@@ -39,5 +41,14 @@ public class OrderOutController {
         orderService.updateOrder(seckillOrder);
     }
 
+    @GetMapping(value = "/listOrderByCurrentTime")
+    public List<SeckillOrder> listOrderByCurrentTime(){
+        return orderService.listOrderByCurrentTime();
+    }
+
+    @PostMapping(value = "/updateOrderByFlag")
+    public void updateOrderByFlag(@RequestBody SeckillOrder seckillOrder){
+        orderService.updateOrderByFlag(seckillOrder);
+    }
 
 }

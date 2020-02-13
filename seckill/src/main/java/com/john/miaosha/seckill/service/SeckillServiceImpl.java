@@ -73,4 +73,10 @@ public class SeckillServiceImpl implements SeckillService {
     public SeckillInfo findSeckillInfoById(Long id) {
         return seckillMapper.findSeckillInfoById(id);
     }
+
+
+    @Override
+    public void seckillNumMinus(SeckillInfo seckillInfo) {
+        seckillMapper.seckillNumMinus(seckillInfo);
+    }
 }

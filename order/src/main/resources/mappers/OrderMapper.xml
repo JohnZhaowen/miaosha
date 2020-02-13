@@ -27,5 +27,20 @@
         SET receive_address = #{receiveAddress}, receive_phone = #{receivePhone}, receive_name = #{receiveName}
         WHERE id = #{id}
     </update>
+    <update id="updateOrderByFlag" parameterType="com.john.miaosha.entity.SeckillOrder">
+        UPDATE `order`
+        SET order_flag = #{orderFlag}
+        WHERE id = #{id}
+    </update>
+
+
+    <select id="listOrderByCurrentTime" parameterType="java.time.LocalDateTime" resultType="com.john.miaosha.entity.SeckillOrder">
+        SELECT id, seckill_result_id seckillResultId, seckill_product_id seckillProductId, product_id productId,
+            pay_amount payAmount, user_id userId, merchant_id merchantId, pay_time payTime, pay_status payStatus,
+            pay_type payType, receive_address receiveAddress, receive_phone receivePhone, receive_name receiveName,
+            trade_serial_num tradeSerialNum, num, order_flag orderFlag, create_time createTime
+         FROM `order`
+         WHERE pay_status = 0 and <![CDATA[create_time <= #{overDueTime}]]>
+    </select>
 
 </mapper>

@@ -1,10 +1,14 @@
 package com.john.miaosha.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SeckillOrder {
 
     private Long id;
@@ -40,5 +44,10 @@ public class SeckillOrder {
     private Integer orderFlag;
 
     private LocalDateTime createTime;
+
+    public SeckillOrder(Long id, Integer orderFlag){
+        this.id = id;
+        this.orderFlag = orderFlag;
+    }
 
 }
