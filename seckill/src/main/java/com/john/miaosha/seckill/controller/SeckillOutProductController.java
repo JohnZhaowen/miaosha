@@ -7,6 +7,7 @@ import com.john.miaosha.seckill.eventModel.CentralEventProcessor;
 import com.john.miaosha.seckill.eventModel.OrderEvent;
 import com.john.miaosha.seckill.eventModel.OrderState;
 import com.john.miaosha.seckill.service.SeckillService;
+import com.netflix.hystrix.contrib.javanica.annotation.HystrixCommand;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,8 +24,16 @@ public class SeckillOutProductController {
     private CentralEventProcessor centralEventProcessor;
 
     @GetMapping(value = "/findSeckillProductById")
+    @HystrixCommand(fallbackMethod = "findSeckillProductByIdFail")
     public SeckillInfo findSeckillProductById(@RequestParam("id") Long id){
        return seckillService.findSeckillInfoById(id);
+    }
+    private SeckillInfo findSeckillProductByIdFail(@RequestParam("id") Long id){
+        log.error("进入熔断服务");
+        SeckillInfo seckillInfo = new SeckillInfo();
+        seckillInfo.setProductName("出错商品");
+        seckillInfo.setId(id);
+       return seckillInfo;
     }
 
     @PostMapping(value = "/sendEvent")
