@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 public class SendMsgServiceImpl<T> implements SendMsgService<T> {
-
     @Autowired
     private AmqpTemplate amqpTemplate;
 
@@ -19,4 +18,7 @@ public class SendMsgServiceImpl<T> implements SendMsgService<T> {
         amqpTemplate.convertAndSend(RabbitMqConfig.SECKILL_EXCHANGE, RabbitMqConfig.SECKILL_BIND_KEY, t);
         log.info("发送消息成功:[{}]", t);
     }
+
+
+
 }
